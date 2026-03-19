@@ -1,59 +1,71 @@
-# MoneymindAngular20Webapp
+# 💸 MoneyMind
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.21.
+MoneyMind is a premium personal finance dashboard built with **Angular 20** and **Tailwind CSS v4**. It helps users track financial goals, manage recurring reminders, and maintain a "Health Score" through gamified elements like streaks and achievements.
 
-## Development server
+## ✨ Core Features
 
-To start a local development server, run:
+- **📊 Financial Health Dashboard**: Real-time health score calculation based on your habits.
+- **🔔 Smart Reminders**: Track one-off and recurring payments (daily, weekly, monthly, yearly).
+- **🎯 Goal Tracking**: Visual progress bars for your long-term savings and financial goals.
+- **⚡ Gamification**: 
+  - **Streaks**: Keep your financial consistency alive.
+  - **Achievements**: Unlock badges as you hit milestones.
+  - **XP & Levels**: Gain experience points by completing tasks.
+- **🛒 Reward Shop**: Use your earned XP to buy "Streak Freezes" and other items.
+- **⚙️ Integrated Settings**: Manage your application state and reset data easily.
+- **📱 Responsive & Premium UI**: Built with modern design principles (Glassmorphism, HSL-tailored colors, and smooth micro-animations).
 
-```bash
-ng serve
-```
+## 🛠 Tech Stack
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- **Framework**: [Angular 20](https://angular.dev/) (Standalone Components, Signals)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) (CSS-first configuration)
+- **Icons**: [Lucide Angular](https://lucide.dev/)
+- **State Management**: Reactive signals-based `StoreService` with LocalStorage persistence.
+- **SSR**: Server-Side Rendering enabled for improved performance and SEO.
 
-## Code scaffolding
+## 🚀 Getting Started
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### Prerequisites
 
-```bash
-ng generate component component-name
-```
+- Node.js (v20+ recommended)
+- npm
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+### Installation
 
 ```bash
-ng test
+git clone https://github.com/femisowems/moneymind-angular20-webapp.git
+cd moneymind-angular20-webapp
+npm install
 ```
 
-## Running end-to-end tests
+### Development Server
 
-For end-to-end (e2e) testing, run:
+The development environment uses `concurrently` to run the Tailwind v4 compiler in parallel with the Angular dev server.
+
+To start the local development server, run:
 
 ```bash
-ng e2e
+npm start
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Once the server is running, navigate to `http://localhost:4200/`.
 
-## Additional Resources
+### Building
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+To create a production build with pre-compiled CSS:
+
+```bash
+npm run build
+```
+
+The artifacts will be stored in the `dist/moneymind-angular20-webapp` directory.
+
+## 🏛 Architecture
+
+- **Standalone Components**: All UI components are standalone for maximum modularity.
+- **Signal-based Store**: Centralized state management using Angular Signals for efficient, fine-grained reactivity.
+- **Tailwind CLI Integration**: Custom build pipeline to ensure Tailwind v4 expansion in the absence of native Angular builder support.
+- **Platform-Aware**: Components are SSR-safe with platform guards for browser-specific APIs (Document, LocalStorage).
+
+---
+Built with ❤️ by the MoneyMind Team.
