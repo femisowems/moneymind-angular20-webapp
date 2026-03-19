@@ -1,5 +1,5 @@
-import { Component, inject, signal, effect, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, signal, effect, computed, PLATFORM_ID, ChangeDetectionStrategy } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { StoreService } from '../services/store.service';
 import { CardComponent } from './ui/card.component';
 import { LucideAngularModule } from 'lucide-angular';
@@ -8,6 +8,7 @@ import { LucideAngularModule } from 'lucide-angular';
   selector: 'app-health-score-card',
   standalone: true,
   imports: [CommonModule, CardComponent, LucideAngularModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <app-card class="p-5 flex flex-col justify-between overflow-hidden relative min-h-[155px]">
       <div class="flex justify-between items-start mb-4 relative z-10">
@@ -44,6 +45,9 @@ export class HealthScoreCardComponent {
   private store = inject(StoreService);
   score = this.store.score;
   displayScore = signal(0);
+  private platformId = inject(PLATFORM_ID);
+  private animationInterval: any;
+  private currentTarget = 0;
 
   constructor() {
     effect(() => {
@@ -54,21 +58,40 @@ export class HealthScoreCardComponent {
   }
 
   private animateScore(target: number) {
+    if (!isPlatformBrowser(this.platformId)) {
+      this.displayScore.set(target);
+      return;
+    }
+
+    // Only restart animation if the target has actually changed
+    if (target === this.currentTarget) return;
+    this.currentTarget = target;
+
+    if (this.animationInterval) {
+      clearInterval(this.animationInterval);
+    }
+
     const start = this.displayScore();
     const duration = 1000;
     const steps = 30;
     const stepTime = duration / steps;
     let currentStep = 0;
 
-    const interval = setInterval(() => {
+    this.animationInterval = setInterval(() => {
       currentStep++;
       const progress = currentStep / steps;
-      const current = Math.floor(start + (target - start) * progress);
-      this.displayScore.set(current);
+      // Use ease-out for smoother animation
+      const easedProgress = 1 - Math.pow(1 - progress, 3);
+      const current = Math.round(start + (target - start) * easedProgress);
+      
+      if (this.displayScore() !== current) {
+        this.displayScore.set(current);
+      }
 
       if (currentStep >= steps) {
         this.displayScore.set(target);
-        clearInterval(interval);
+        clearInterval(this.animationInterval);
+        this.animationInterval = null;
       }
     }, stepTime);
   }

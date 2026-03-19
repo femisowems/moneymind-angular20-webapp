@@ -1,13 +1,13 @@
-import { Component, Input, Output, EventEmitter, ElementRef, ViewChild, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, Input, Output, EventEmitter, PLATFORM_ID, inject, ChangeDetectionStrategy, OnDestroy, Inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { X } from 'lucide-angular';
 import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-modal',
   standalone: true,
   imports: [CommonModule, LucideAngularModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('backdrop', [
       transition(':enter', [

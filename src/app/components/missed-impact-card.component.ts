@@ -1,4 +1,4 @@
-import { Component, inject, computed } from '@angular/core';
+import { Component, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StoreService } from '../services/store.service';
 import { CardComponent } from './ui/card.component';
@@ -8,6 +8,7 @@ import { LucideAngularModule } from 'lucide-angular';
   selector: 'app-missed-impact-card',
   standalone: true,
   imports: [CommonModule, CardComponent, LucideAngularModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <app-card class="p-5 flex flex-col justify-between overflow-hidden relative border-danger/20 min-h-[155px]">
       <div class="flex justify-between items-start mb-2 relative z-10">

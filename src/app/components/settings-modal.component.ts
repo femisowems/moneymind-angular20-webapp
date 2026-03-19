@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ModalComponent } from './ui/modal.component';
 import { ButtonComponent } from './ui/button.component';
@@ -8,7 +8,8 @@ import { StoreService } from '../services/store.service';
 @Component({
   selector: 'app-settings-modal',
   standalone: true,
-  imports: [CommonModule, ModalComponent, LucideAngularModule],
+  imports: [CommonModule, ModalComponent, ButtonComponent, LucideAngularModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <app-modal [isOpen]="isOpen" (onClose)="onClose.emit()" title="Settings">
       <div class="space-y-6">
@@ -27,27 +28,35 @@ import { StoreService } from '../services/store.service';
         <div class="space-y-2">
           <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 px-1">Application</h4>
           <div class="grid gap-2">
-             <button class="flex items-center justify-between p-4 rounded-2xl bg-white border border-gray-100 hover:border-primary/30 transition-all text-left group">
-               <div class="flex items-center gap-3">
-                 <div class="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center text-success group-hover:bg-success/20 transition-colors">
-                   <i-lucide name="bell" class="w-4 h-4"></i-lucide>
-                 </div>
-                 <span class="font-medium text-gray-700">Notifications</span>
-               </div>
-               <div class="w-10 h-5 bg-gray-200 rounded-full relative">
-                 <div class="absolute right-1 top-1 w-3 h-3 bg-white rounded-full"></div>
-               </div>
-             </button>
+              <button 
+                appButton 
+                variant="secondary"
+                class="flex items-center justify-between p-4 rounded-2xl bg-white border border-gray-100 hover:border-primary/30 transition-all text-left group w-full h-auto"
+              >
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center text-success group-hover:bg-success/20 transition-colors">
+                    <i-lucide name="bell" class="w-4 h-4"></i-lucide>
+                  </div>
+                  <span class="font-medium text-gray-700">Notifications</span>
+                </div>
+                <div class="w-10 h-5 bg-gray-200 rounded-full relative">
+                  <div class="absolute right-1 top-1 w-3 h-3 bg-white rounded-full"></div>
+                </div>
+              </button>
 
-             <button class="flex items-center justify-between p-4 rounded-2xl bg-white border border-gray-100 hover:border-primary/30 transition-all text-left group">
-               <div class="flex items-center gap-3">
-                 <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary/20 transition-colors">
-                   <i-lucide name="moon" class="w-4 h-4"></i-lucide>
-                 </div>
-                 <span class="font-medium text-gray-700">Dark Mode</span>
-               </div>
-               <span class="text-xs font-bold text-primary bg-primary/5 px-2 py-1 rounded">System</span>
-             </button>
+              <button 
+                appButton 
+                variant="secondary"
+                class="flex items-center justify-between p-4 rounded-2xl bg-white border border-gray-100 hover:border-primary/30 transition-all text-left group w-full h-auto"
+              >
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary/20 transition-colors">
+                    <i-lucide name="moon" class="w-4 h-4"></i-lucide>
+                  </div>
+                  <span class="font-medium text-gray-700">Dark Mode</span>
+                </div>
+                <span class="text-xs font-bold text-primary bg-primary/5 px-2 py-1 rounded">System</span>
+              </button>
           </div>
         </div>
 
@@ -55,21 +64,23 @@ import { StoreService } from '../services/store.service';
         <div class="space-y-2 pt-2">
           <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 px-1">Data & Privacy</h4>
           <div class="grid gap-2">
-             <button 
-               (click)="onResetData()"
-               class="flex items-center justify-between p-4 rounded-2xl bg-white border border-gray-100 hover:border-danger/30 transition-all text-left group"
-             >
-               <div class="flex items-center gap-3">
-                 <div class="w-8 h-8 rounded-lg bg-danger/10 flex items-center justify-center text-danger group-hover:bg-danger/20 transition-colors">
-                   <i-lucide name="trash-2" class="w-4 h-4"></i-lucide>
-                 </div>
-                 <div>
-                   <span class="font-medium text-gray-700 block">Reset All Data</span>
-                   <span class="text-[10px] text-gray-400">This action cannot be undone</span>
-                 </div>
-               </div>
-               <i-lucide name="chevron-right" class="w-4 h-4 text-gray-300"></i-lucide>
-             </button>
+              <button 
+                appButton
+                variant="secondary"
+                (click)="onResetData()"
+                class="flex items-center justify-between p-4 rounded-2xl bg-white border border-gray-100 hover:border-danger/30 transition-all text-left group w-full h-auto"
+              >
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-lg bg-danger/10 flex items-center justify-center text-danger group-hover:bg-danger/20 transition-colors">
+                    <i-lucide name="trash-2" class="w-4 h-4"></i-lucide>
+                  </div>
+                  <div>
+                    <span class="font-medium text-gray-700 block">Reset All Data</span>
+                    <span class="text-[10px] text-gray-400">This action cannot be undone</span>
+                  </div>
+                </div>
+                <i-lucide name="chevron-right" class="w-4 h-4 text-gray-300"></i-lucide>
+              </button>
           </div>
         </div>
 

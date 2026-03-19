@@ -1,12 +1,14 @@
-import { Component, inject, signal, effect } from '@angular/core';
+import { Component, inject, signal, effect, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StoreService } from '../services/store.service';
-import { Zap, Share2, LucideAngularModule } from 'lucide-angular';
+import { LucideAngularModule } from 'lucide-angular';
+import { ButtonComponent } from './ui/button.component';
 
 @Component({
   selector: 'app-player-level-bar',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule], // I'll add Lucide later if needed or use raw SVG
+  imports: [CommonModule, LucideAngularModule, ButtonComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="bg-white rounded-3xl p-5 sm:p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 mb-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-5 sm:gap-6 w-full cursor-default group hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-500">
       <div class="flex items-center justify-between sm:justify-start gap-4">
@@ -23,8 +25,10 @@ import { Zap, Share2, LucideAngularModule } from 'lucide-angular';
         </div>
 
         <button 
+          appButton
+          variant="ghost"
           (click)="openShare()"
-          class="sm:hidden bg-gray-50 hover:bg-primary/10 text-gray-500 hover:text-primary p-3 rounded-2xl transition-all border border-gray-100 flex items-center justify-center"
+          class="sm:hidden p-3 rounded-2xl"
           title="Share Scorecard"
         >
           <i-lucide name="share-2" class="w-5 h-5"></i-lucide>
@@ -51,8 +55,10 @@ import { Zap, Share2, LucideAngularModule } from 'lucide-angular';
       </div>
       
       <button 
+        appButton
+        variant="secondary"
         (click)="openShare()"
-        class="hidden sm:flex bg-gradient-to-br from-gray-50 to-white hover:from-primary/10 hover:to-primary/5 text-gray-600 hover:text-primary font-bold px-4 py-3 rounded-2xl transition-all shadow-sm border border-gray-200 hover:border-primary/20 flex-col items-center justify-center shrink-0 min-w-[72px]"
+        class="hidden sm:flex px-4 py-3 rounded-2xl flex-col items-center justify-center shrink-0 min-w-[72px]"
         title="Share Scorecard"
       >
         <i-lucide name="share-2" class="w-5 h-5 mb-1"></i-lucide>
@@ -81,8 +87,9 @@ export class PlayerLevelBarComponent {
     });
   }
 
+  @Output() share = new EventEmitter<void>();
+  
   openShare() {
-    // TODO: Implement share modal
-    console.log('Open share modal');
+    this.share.emit();
   }
 }

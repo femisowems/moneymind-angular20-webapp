@@ -1,4 +1,4 @@
-import { Component, Input, HostBinding, HostListener, Output, EventEmitter } from '@angular/core';
+import { Component, Input, HostBinding, HostListener, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { cn } from '../../lib/utils';
 
@@ -6,6 +6,7 @@ import { cn } from '../../lib/utils';
   selector: 'app-card',
   standalone: true,
   imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `<ng-content></ng-content>`,
   styles: [`
     :host {

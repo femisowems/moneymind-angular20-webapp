@@ -1,4 +1,4 @@
-import { Component, inject, signal, effect, computed } from '@angular/core';
+import { Component, inject, signal, effect, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StoreService } from '../services/store.service';
 import { trigger, transition, style, animate, keyframes } from '@angular/animations';
@@ -9,6 +9,7 @@ type Tone = 'funny' | 'calm' | 'savage';
   selector: 'app-nudge-message',
   standalone: true,
   imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('float', [
       transition('* => *', [

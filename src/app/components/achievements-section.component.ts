@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StoreService } from '../services/store.service';
 import { ACHIEVEMENTS, Achievement } from '../lib/achievements';
@@ -10,6 +10,7 @@ import { trigger, transition, style, animate, query, stagger } from '@angular/an
   selector: 'app-achievements-section',
   standalone: true,
   imports: [CommonModule, BadgeDetailsModalComponent, LucideAngularModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('staggerList', [
       transition('* => *', [

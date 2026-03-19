@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StoreService } from '../services/store.service';
 import { CardComponent } from './ui/card.component';
@@ -9,6 +9,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
   selector: 'app-streak-card',
   standalone: true,
   imports: [CommonModule, CardComponent, LucideAngularModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <app-card class="p-5 flex flex-col justify-between overflow-hidden relative min-h-[155px]">
       <div class="flex justify-between items-start mb-4 relative z-10">

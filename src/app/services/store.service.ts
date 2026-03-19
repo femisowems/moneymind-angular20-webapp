@@ -245,25 +245,46 @@ export class StoreService {
     const streak = this._streak();
     const achievements = this._unlockedAchievements();
 
-    const completed = reminders.filter(r => r.isCompleted).length;
+    const allReminders = [...reminders];
+    const completed = allReminders.filter(r => r.isCompleted).length;
+    
+    // XP and Level calculation remains cumulative
     const xp = (completed * 10) + (achievements.length * 50);
     const level = Math.floor(xp / 100) + 1;
     const nextLevelXP = level * 100;
 
-    if (reminders.length === 0) {
+    if (allReminders.length === 0) {
       this._score.set({ value: 100, label: 'Strong', xp, level, nextLevelXP });
       return;
     }
 
-    const total = reminders.length;
-    const completionRatio = (completed / total) * 70;
+    // Use only the most recent 50 reminders (pending + completed) for the health score
+    // This prevents the score from being diluted by a massive history of recurring tasks.
+    const sortedByDate = allReminders.sort((a, b) => 
+      new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime()
+    );
+    const recentReminders = sortedByDate.slice(0, 50);
+    
+    const recentTotal = recentReminders.length;
+    const recentCompleted = recentReminders.filter(r => r.isCompleted).length;
+
+    // Calculate components
+    const completionRatio = (recentCompleted / recentTotal) * 70;
     const streakBonus = Math.min((streak.currentStreak / 7) * 30, 30);
-    const rawScore = Math.round(completionRatio + streakBonus);
+    
+    // Final score stability: Use a small epsilon to avoid rounding jitter at .5
+    const rawScoreSum = completionRatio + streakBonus;
+    const roundedScore = Math.round(rawScoreSum + 0.00001);
+    const finalScore = Math.min(100, Math.max(0, roundedScore));
 
     let label: 'Strong' | 'Good' | 'Needs Attention' = 'Needs Attention';
-    if (rawScore >= 80) label = 'Strong';
-    else if (rawScore >= 50) label = 'Good';
+    if (finalScore >= 80) label = 'Strong';
+    else if (finalScore >= 50) label = 'Good';
 
-    this._score.set({ value: rawScore, label, xp, level, nextLevelXP });
+    // Only update signal if the integer value actually changed to prevent redundant downstream effects
+    const currentScore = this._score();
+    if (currentScore.value !== finalScore || currentScore.xp !== xp) {
+      this._score.set({ value: finalScore, label, xp, level, nextLevelXP });
+    }
   }
 }

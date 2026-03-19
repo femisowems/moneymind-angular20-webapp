@@ -1,5 +1,5 @@
-import { Component, Input, Output, EventEmitter, ElementRef, ViewChild, inject, signal, effect } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Input, Output, EventEmitter, ElementRef, ViewChild, inject, signal, effect, PLATFORM_ID, Inject, ChangeDetectionStrategy } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { StoreService } from '../services/store.service';
 import { ACHIEVEMENTS } from '../lib/achievements';
 import html2canvas from 'html2canvas';
@@ -12,6 +12,7 @@ import { LucideAngularModule } from 'lucide-angular';
   selector: 'app-share-scorecard-modal',
   standalone: true,
   imports: [CommonModule, ModalComponent, ButtonComponent, LucideAngularModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <app-modal [isOpen]="isOpen" (onClose)="onClose.emit()" title="Share Your Progress">
       <div class="flex flex-col gap-6 pt-2">
@@ -83,6 +84,7 @@ export class ShareScorecardModalComponent {
   @Output() onClose = new EventEmitter<void>();
   @ViewChild('cardRef') cardRef!: ElementRef;
 
+  private platformId = inject(PLATFORM_ID);
   private store = inject(StoreService);
   score = this.store.score;
   streak = this.store.streak;
@@ -100,6 +102,7 @@ export class ShareScorecardModalComponent {
   }
 
   async handleDownload() {
+    if (!isPlatformBrowser(this.platformId)) return;
     if (!this.cardRef) return;
     try {
       this.isCapturing.set(true);

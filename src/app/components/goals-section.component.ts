@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StoreService } from '../services/store.service';
 import { Goal } from '../types';
@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-goals-section',
   standalone: true,
   imports: [CommonModule, ButtonComponent, InputComponent, LucideAngularModule, FormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="mb-10">
       <div class="flex items-center justify-between mb-3">

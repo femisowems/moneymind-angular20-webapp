@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, inject, computed } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StoreService } from '../services/store.service';
 import { Achievement } from '../lib/achievements';
@@ -9,6 +9,7 @@ import { LucideAngularModule } from 'lucide-angular';
   selector: 'app-badge-details-modal',
   standalone: true,
   imports: [CommonModule, ModalComponent, LucideAngularModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <app-modal [isOpen]="isOpen" (onClose)="onClose.emit()" title="Achievement Details">
       <div *ngIf="achievement" class="flex flex-col items-center justify-center p-6 bg-gray-50 rounded-3xl border border-gray-100 relative overflow-hidden mb-6">

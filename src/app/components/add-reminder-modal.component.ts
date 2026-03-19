@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, inject, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StoreService } from '../services/store.service';
 import { ModalComponent } from './ui/modal.component';
@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-add-reminder-modal',
   standalone: true,
   imports: [CommonModule, ModalComponent, ButtonComponent, InputComponent, LucideAngularModule, FormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <app-modal [isOpen]="isOpen" (onClose)="onClose.emit()" title="Add New Reminder">
       <form (submit)="handleSubmit($event)" class="flex flex-col gap-5 pt-2">

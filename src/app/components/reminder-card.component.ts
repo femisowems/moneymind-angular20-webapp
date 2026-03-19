@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StoreService } from '../services/store.service';
 import { Reminder } from '../types';
@@ -13,6 +13,7 @@ import { cn } from '../lib/utils';
   selector: 'app-reminder-card',
   standalone: true,
   imports: [CommonModule, ButtonComponent, BadgeComponent, LucideAngularModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="relative group">
       <!-- Background for swipe actions (simplified as a static hover state for now) -->

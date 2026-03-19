@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, inject, signal, effect, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, signal, effect, ViewChild, ElementRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StoreService } from '../services/store.service';
 import { Reminder } from '../types';
@@ -14,6 +14,7 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-reminder-details-modal',
   standalone: true,
   imports: [CommonModule, ModalComponent, ButtonComponent, BadgeComponent, InputComponent, LucideAngularModule, FormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <app-modal [isOpen]="isOpen" (onClose)="onClose.emit()" title="Reminder Details">
       <div *ngIf="reminder" class="flex flex-col gap-6 pt-2">

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, inject, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { StoreService } from '../services/store.service';
@@ -10,14 +10,15 @@ import { LucideAngularModule } from 'lucide-angular';
   selector: 'app-shop-modal',
   standalone: true,
   imports: [CommonModule, ModalComponent, ButtonComponent, LucideAngularModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('statusFade', [
       transition(':enter', [
-        style({ opacity: 0, translateY: 10 }),
-        animate('200ms ease-out', style({ opacity: 1, translateY: 0 }))
+        style({ opacity: 0, transform: 'translateY(10px)' }),
+        animate('200ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
       ]),
       transition(':leave', [
-        animate('200ms ease-in', style({ opacity: 0 }))
+        animate('200ms ease-in', style({ opacity: 0, transform: 'translateY(5px)' }))
       ])
     ])
   ],
@@ -62,7 +63,7 @@ import { LucideAngularModule } from 'lucide-angular';
             
             <div class="mt-5 flex items-center justify-between border-t border-gray-100 pt-5">
                <span class="text-xl font-black text-gray-900 flex items-center gap-1.5">
-                 500 <span className="text-sm font-bold text-gray-400 uppercase tracking-widest">XP</span>
+                 500 <span class="text-sm font-bold text-gray-400 uppercase tracking-widest">XP</span>
                </span>
                <button 
                  appButton

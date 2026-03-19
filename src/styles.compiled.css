@@ -1863,6 +1863,12 @@
       --tw-shadow-color: color-mix(in oklab, var(--color-blue-100) var(--tw-shadow-alpha), transparent);
     }
   }
+  .shadow-danger\/20 {
+    --tw-shadow-color: color-mix(in srgb, #ef4444 20%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      --tw-shadow-color: color-mix(in oklab, color-mix(in oklab, var(--color-danger) 20%, transparent) var(--tw-shadow-alpha), transparent);
+    }
+  }
   .shadow-emerald-100 {
     --tw-shadow-color: oklch(95% 0.052 163.051);
     @supports (color: color-mix(in lab, red, red)) {
@@ -2476,6 +2482,16 @@
       }
     }
   }
+  .hover\:shadow-primary\/30 {
+    &:hover {
+      @media (hover: hover) {
+        --tw-shadow-color: color-mix(in srgb, #6366f1 30%, transparent);
+        @supports (color: color-mix(in lab, red, red)) {
+          --tw-shadow-color: color-mix(in oklab, color-mix(in oklab, var(--color-primary) 30%, transparent) var(--tw-shadow-alpha), transparent);
+        }
+      }
+    }
+  }
   .focus\:bg-white {
     &:focus {
       background-color: var(--color-white);
@@ -2507,6 +2523,14 @@
       --tw-ring-color: color-mix(in srgb, #6366f1 20%, transparent);
       @supports (color: color-mix(in lab, red, red)) {
         --tw-ring-color: color-mix(in oklab, var(--color-primary) 20%, transparent);
+      }
+    }
+  }
+  .focus-visible\:ring-primary\/40 {
+    &:focus-visible {
+      --tw-ring-color: color-mix(in srgb, #6366f1 40%, transparent);
+      @supports (color: color-mix(in lab, red, red)) {
+        --tw-ring-color: color-mix(in oklab, var(--color-primary) 40%, transparent);
       }
     }
   }

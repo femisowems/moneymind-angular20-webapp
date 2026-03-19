@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, OnInit } from '@angular/core';
+import { Component, inject, signal, computed, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StoreService } from '../services/store.service';
 import { PlayerLevelBarComponent } from './player-level-bar.component';
@@ -14,6 +14,7 @@ import { ShopModalComponent } from './shop-modal.component';
 import { ReminderDetailsModalComponent } from './reminder-details-modal.component';
 import { ButtonComponent } from './ui/button.component';
 import { SettingsModalComponent } from './settings-modal.component';
+import { ShareScorecardModalComponent } from './share-scorecard-modal.component';
 import { LucideAngularModule } from 'lucide-angular';
 import { format } from 'date-fns';
 import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
@@ -22,6 +23,7 @@ import { Reminder } from '../types';
 @Component({
   selector: 'app-home',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule, 
     PlayerLevelBarComponent, 
@@ -36,6 +38,7 @@ import { Reminder } from '../types';
     ShopModalComponent,
     ReminderDetailsModalComponent,
     SettingsModalComponent,
+    ShareScorecardModalComponent,
     ButtonComponent,
     LucideAngularModule
   ],
@@ -78,7 +81,7 @@ import { Reminder } from '../types';
         </div>
       </header>
 
-      <app-player-level-bar></app-player-level-bar>
+      <app-player-level-bar (share)="isShareModalOpen.set(true)"></app-player-level-bar>
 
       <!-- Top Stats -->
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
@@ -139,27 +142,42 @@ import { Reminder } from '../types';
         </ng-template>
       </div>
 
-      <!-- Modals -->
-      <app-add-reminder-modal 
-        [isOpen]="isAddModalOpen()" 
-        (onClose)="isAddModalOpen.set(false)"
-      ></app-add-reminder-modal>
+      <!-- Modals (Lazy Loaded) -->
+      @defer (on idle) {
+        <app-add-reminder-modal 
+          [isOpen]="isAddModalOpen()" 
+          (onClose)="isAddModalOpen.set(false)"
+        ></app-add-reminder-modal>
+      }
 
-      <app-shop-modal 
-        [isOpen]="isShopOpen()" 
-        (onClose)="isShopOpen.set(false)"
-      ></app-shop-modal>
+      @defer (on idle) {
+        <app-shop-modal 
+          [isOpen]="isShopOpen()" 
+          (onClose)="isShopOpen.set(false)"
+        ></app-shop-modal>
+      }
 
-      <app-reminder-details-modal 
-        [isOpen]="!!selectedReminder()" 
-        [reminder]="selectedReminder()"
-        (onClose)="selectedReminder.set(null)"
-      ></app-reminder-details-modal>
+      @defer (on idle) {
+        <app-reminder-details-modal 
+          [isOpen]="!!selectedReminder()" 
+          [reminder]="selectedReminder()"
+          (onClose)="selectedReminder.set(null)"
+        ></app-reminder-details-modal>
+      }
 
-      <app-settings-modal
-        [isOpen]="isSettingsOpen()"
-        (onClose)="isSettingsOpen.set(false)"
-      ></app-settings-modal>
+      @defer (on idle) {
+        <app-settings-modal
+          [isOpen]="isSettingsOpen()"
+          (onClose)="isSettingsOpen.set(false)"
+        ></app-settings-modal>
+      }
+
+      @defer (on idle) {
+        <app-share-scorecard-modal
+          [isOpen]="isShareModalOpen()"
+          (onClose)="isShareModalOpen.set(false)"
+        ></app-share-scorecard-modal>
+      }
     </main>
   `
 })
@@ -172,6 +190,7 @@ export class HomeComponent implements OnInit {
   isAddModalOpen = signal(false);
   isShopOpen = signal(false);
   isSettingsOpen = signal(false);
+  isShareModalOpen = signal(false);
   selectedReminder = signal<Reminder | null>(null);
 
   filteredReminders = computed(() => {
