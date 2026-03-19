@@ -1,0 +1,94 @@
+{
+  "name": "moneymind-angular20-webapp",
+  "version": "0.1.0",
+  "description": "MoneyMind: A powerful, modern personal finance tracker built with Angular 20. Featuring Server-Side Rendering (SSR) for optimal performance, Tailwind CSS v4 for a premium design, and integrated Lucide icons.",
+  "author": "Femi Sowemimo <femi@example.com>",
+  "license": "MIT",
+  "keywords": [
+    "angular",
+    "finance-tracker",
+    "moneymind",
+    "ssr",
+    "tailwindcss-v4",
+    "lucide-icons",
+    "web-application",
+    "modern-ui"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/femisowemimo/moneymind-angular20-webapp.git"
+  },
+  "homepage": "https://github.com/femisowemimo/moneymind-angular20-webapp#readme",
+  "bugs": {
+    "url": "https://github.com/femisowemimo/moneymind-angular20-webapp/issues"
+  },
+  "engines": {
+    "node": "^20.17.0 || ^21.0.0",
+    "npm": ">=10.0.0"
+  },
+  "scripts": {
+    "ng": "ng",
+    "start": "concurrently \"npm run watch:css\" \"ng serve\"",
+    "build": "npm run build:css && ng build",
+    "build:css": "npx @tailwindcss/cli -i src/styles.css -o src/styles.compiled.css",
+    "watch:css": "npx @tailwindcss/cli -i src/styles.css -o src/styles.compiled.css --watch",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "serve:ssr:moneymind-angular20-webapp": "node dist/moneymind-angular20-webapp/server/server.mjs"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true,
+    "overrides": [
+      {
+        "files": "*.html",
+        "options": {
+          "parser": "angular"
+        }
+      }
+    ]
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "^20.3.18",
+    "@angular/common": "^20.3.0",
+    "@angular/compiler": "^20.3.0",
+    "@angular/core": "^20.3.0",
+    "@angular/forms": "^20.3.0",
+    "@angular/platform-browser": "^20.3.0",
+    "@angular/platform-server": "^20.3.0",
+    "@angular/router": "^20.3.0",
+    "@angular/ssr": "^20.3.21",
+    "@supabase/supabase-js": "^2.99.3",
+    "autoprefixer": "^10.4.27",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
+    "express": "^5.1.0",
+    "html2canvas": "^1.4.1",
+    "lucide-angular": "^0.577.0",
+    "postcss": "^8.5.8",
+    "rxjs": "~7.8.0",
+    "tailwind-merge": "^3.5.0",
+    "tailwindcss": "^4.2.2",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.15.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^20.3.21",
+    "@angular/cli": "^20.3.21",
+    "@angular/compiler-cli": "^20.3.0",
+    "@tailwindcss/cli": "^4.2.2",
+    "@tailwindcss/postcss": "^4.2.2",
+    "@types/express": "^5.0.1",
+    "@types/jasmine": "~5.1.0",
+    "@types/node": "^20.17.19",
+    "concurrently": "^9.2.1",
+    "jasmine-core": "~5.9.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "typescript": "~5.9.2"
+  }
+}
