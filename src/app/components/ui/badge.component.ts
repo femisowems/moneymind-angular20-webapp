@@ -1,11 +1,11 @@
 import { Component, Input, HostBinding, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { cn } from '../../lib/utils';
 
 @Component({
   selector: 'app-badge',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `<ng-content></ng-content>`
 })

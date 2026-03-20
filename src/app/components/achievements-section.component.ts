@@ -29,69 +29,75 @@ import { trigger, transition, style, animate, query, stagger } from '@angular/an
         <h2 class="text-sm font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-2.5">
           <i-lucide name="trophy" class="w-4 h-4 text-primary"></i-lucide> Badges & Achievements
         </h2>
-        
-        <button 
-          *ngIf="visibleAchievements().length > 4"
-          (click)="toggleExpand()"
-          class="relative overflow-hidden text-xs font-bold text-primary transition-all flex items-center gap-2 group bg-white border border-gray-100 hover:border-primary/30 px-4 py-2 rounded-full shadow-sm hover:shadow-md active:scale-95"
-        >
-          <span>{{ isExpanded() ? 'Show less' : '+' + (visibleAchievements().length - 4) + ' more' }}</span>
-          <div 
-            class="flex items-center justify-center w-3 h-3 transition-transform"
-            [style.transform]="isExpanded() ? 'rotate(180deg)' : 'rotate(0deg)'"
-          >
-            <div class="w-1.5 h-1.5 border-b-2 border-r-2 border-primary rotate-45 mb-0.5 group-hover:border-primary-hover"></div>
-          </div>
-        </button>
+    
+        @if (visibleAchievements().length > 4) {
+          <button
+            (click)="toggleExpand()"
+            class="relative overflow-hidden text-xs font-bold text-primary transition-all flex items-center gap-2 group bg-white border border-gray-100 hover:border-primary/30 px-4 py-2 rounded-full shadow-sm hover:shadow-md active:scale-95"
+            >
+            <span>{{ isExpanded() ? 'Show less' : '+' + (visibleAchievements().length - 4) + ' more' }}</span>
+            <div
+              class="flex items-center justify-center w-3 h-3 transition-transform"
+              [style.transform]="isExpanded() ? 'rotate(180deg)' : 'rotate(0deg)'"
+              >
+              <div class="w-1.5 h-1.5 border-b-2 border-r-2 border-primary rotate-45 mb-0.5 group-hover:border-primary-hover"></div>
+            </div>
+          </button>
+        }
       </div>
-      
-      <div 
+    
+      <div
         class="grid grid-cols-2 sm:grid-cols-4 gap-4"
         [@staggerList]="displayedAchievements().length"
-      >
-        <button 
-          *ngFor="let achievement of displayedAchievements()"
-          (click)="selectBadge(achievement)"
-          class="p-5 rounded-[2.5rem] border shadow-sm transition-all flex flex-col items-center justify-center text-center relative overflow-hidden group hover:shadow-xl hover:border-primary/30 bg-white border-gray-100 hover:-translate-y-1 active:scale-95"
         >
-          <div class="relative w-16 h-16 xl:w-20 xl:h-20 mb-4 flex items-center justify-center bg-gray-50 rounded-full group-hover:bg-primary/5 transition-colors border border-gray-100 shadow-sm group-hover:shadow-md">
-            <!-- Progress Circle for Locked Multi-step achievements (Simplified) -->
-            <svg *ngIf="!isUnlocked(achievement.id) && achievement.maxProgress && achievement.maxProgress > 1" class="absolute inset-0 w-full h-full -rotate-90 pointer-events-none p-1" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="46" stroke="#f1f5f9" stroke-width="8" fill="none" />
-              <circle cx="50" cy="50" r="46" stroke="#6366f1" stroke-width="8" fill="none" 
-                class="transition-all duration-1000 ease-out" 
-                [attr.stroke-dasharray]="289" 
-                [attr.stroke-dashoffset]="289 - (289 * getPercent(achievement)) / 100" 
-                stroke-linecap="round" />
-            </svg>
-            <span 
-              class="text-[2.5rem] xl:text-[3rem] filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.08)] antialiased z-10 transition-transform group-hover:scale-110 duration-500"
-              [ngClass]="{'grayscale opacity-30': !isUnlocked(achievement.id)}"
+        @for (achievement of displayedAchievements(); track achievement) {
+          <button
+            (click)="selectBadge(achievement)"
+            class="p-5 rounded-[2.5rem] border shadow-sm transition-all flex flex-col items-center justify-center text-center relative overflow-hidden group hover:shadow-xl hover:border-primary/30 bg-white border-gray-100 hover:-translate-y-1 active:scale-95"
             >
-              {{ achievement.icon }}
-            </span>
-          </div>
-          
-          <h3 class="text-sm font-black text-gray-900 mb-1 tracking-tight group-hover:text-primary transition-colors">
-            {{ achievement.title }}
-          </h3>
-          <div class="flex items-center gap-1.5 min-h-[1.25rem]">
-            <div 
-              *ngIf="isUnlocked(achievement.id)"
-              class="w-1.5 h-1.5 rounded-full bg-success shadow-[0_0_8px_rgba(34,197,94,0.4)]"
-            ></div>
-            <span *ngIf="!isUnlocked(achievement.id)" class="text-[9px] font-black uppercase text-gray-400 tracking-[0.1em] opacity-80">Locked</span>
-          </div>
-        </button>
+            <div class="relative w-16 h-16 xl:w-20 xl:h-20 mb-4 flex items-center justify-center bg-gray-50 rounded-full group-hover:bg-primary/5 transition-colors border border-gray-100 shadow-sm group-hover:shadow-md">
+              <!-- Progress Circle for Locked Multi-step achievements (Simplified) -->
+              @if (!isUnlocked(achievement.id) && achievement.maxProgress && achievement.maxProgress > 1) {
+                <svg class="absolute inset-0 w-full h-full -rotate-90 pointer-events-none p-1" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="46" stroke="#f1f5f9" stroke-width="8" fill="none" />
+                  <circle cx="50" cy="50" r="46" stroke="#6366f1" stroke-width="8" fill="none"
+                    class="transition-all duration-1000 ease-out"
+                    [attr.stroke-dasharray]="289"
+                    [attr.stroke-dashoffset]="289 - (289 * getPercent(achievement)) / 100"
+                    stroke-linecap="round" />
+                </svg>
+              }
+              <span
+                class="text-[2.5rem] xl:text-[3rem] filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.08)] antialiased z-10 transition-transform group-hover:scale-110 duration-500"
+                [ngClass]="{'grayscale opacity-30': !isUnlocked(achievement.id)}"
+                >
+                {{ achievement.icon }}
+              </span>
+            </div>
+            <h3 class="text-sm font-black text-gray-900 mb-1 tracking-tight group-hover:text-primary transition-colors">
+              {{ achievement.title }}
+            </h3>
+            <div class="flex items-center gap-1.5 min-h-[1.25rem]">
+              @if (isUnlocked(achievement.id)) {
+                <div
+                  class="w-1.5 h-1.5 rounded-full bg-success shadow-[0_0_8px_rgba(34,197,94,0.4)]"
+                ></div>
+              }
+              @if (!isUnlocked(achievement.id)) {
+                <span class="text-[9px] font-black uppercase text-gray-400 tracking-[0.1em] opacity-80">Locked</span>
+              }
+            </div>
+          </button>
+        }
       </div>
     </section>
-
-    <app-badge-details-modal 
-      [isOpen]="!!selectedBadge()" 
-      [achievement]="selectedBadge()" 
+    
+    <app-badge-details-modal
+      [isOpen]="!!selectedBadge()"
+      [achievement]="selectedBadge()"
       (onClose)="selectedBadge.set(null)"
     ></app-badge-details-modal>
-  `
+    `
 })
 export class AchievementsSectionComponent {
   private store = inject(StoreService);

@@ -31,10 +31,10 @@ type Tone = 'funny' | 'calm' | 'savage';
     ])
   ],
   template: `
-    <div 
+    <div
       class="flex flex-col gap-4 mb-8 p-6 rounded-[2rem] border-2 shadow-sm transition-all duration-500"
       [ngClass]="theme().container"
-    >
+      >
       <div class="flex justify-between items-center">
         <h2 class="text-xs font-black uppercase tracking-widest opacity-60" [ngClass]="theme().text">Today's Focus</h2>
         <div class="flex gap-1.5 text-xs bg-white/60 backdrop-blur-md rounded-full p-1 border border-white/40 shadow-sm">
@@ -43,27 +43,28 @@ type Tone = 'funny' | 'calm' | 'savage';
           <button (click)="tone.set('savage')" class="px-4 py-1.5 rounded-full transition-all font-bold" [ngClass]="tone() === 'savage' ? theme().buttonActive : theme().buttonInactive">Savage</button>
         </div>
       </div>
-      
+    
       <div class="flex items-start gap-5 pt-2">
-        <div 
+        <div
           class="w-16 h-16 shrink-0 rounded-full flex items-center justify-center text-3xl border-4 shadow-xl shadow-black/5"
           [ngClass]="theme().iconBg"
           [@float]
-        >
+          >
           {{ theme().icon }}
         </div>
-        
-        <div
-          *ngIf="message()"
-          [@fadeSlide]
-          class="text-2xl md:text-[1.75rem] font-black leading-tight tracking-tight pt-1"
-          [ngClass]="theme().text"
-        >
-          "{{ message() }}"
-        </div>
+    
+        @if (message()) {
+          <div
+            [@fadeSlide]
+            class="text-2xl md:text-[1.75rem] font-black leading-tight tracking-tight pt-1"
+            [ngClass]="theme().text"
+            >
+            "{{ message() }}"
+          </div>
+        }
       </div>
     </div>
-  `
+    `
 })
 export class NudgeMessageComponent {
   private store = inject(StoreService);

@@ -1,12 +1,12 @@
 import { Component, inject, signal, effect, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { StoreService } from '../services/store.service';
 import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-player-level-bar',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
+  imports: [LucideAngularModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="bg-white rounded-3xl p-5 sm:p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 mb-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-5 sm:gap-6 w-full cursor-default group hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-500">

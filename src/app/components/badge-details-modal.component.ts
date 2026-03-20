@@ -12,53 +12,65 @@ import { LucideAngularModule } from 'lucide-angular';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <app-modal [isOpen]="isOpen" (onClose)="onClose.emit()" title="Achievement Details">
-      <div *ngIf="achievement" class="flex flex-col items-center justify-center p-6 bg-gray-50 rounded-3xl border border-gray-100 relative overflow-hidden mb-6">
-        <div 
-          *ngIf="isUnlocked() && achievement.tier === 'platinum'" 
-          class="absolute inset-0 bg-indigo-500/10 blur-3xl rounded-full"
-        ></div>
-        <div 
-          class="w-28 h-28 rounded-full flex items-center justify-center text-6xl shadow-xl relative z-10 transition-all"
-          [ngClass]="isUnlocked() ? 'bg-white filter-none' : 'bg-gray-200 grayscale opacity-60'"
-        >
-           <span class="drop-shadow-lg">{{ achievement.icon }}</span>
+      @if (achievement) {
+        <div class="flex flex-col items-center justify-center p-6 bg-gray-50 rounded-3xl border border-gray-100 relative overflow-hidden mb-6">
+          @if (isUnlocked() && achievement.tier === 'platinum') {
+            <div
+              class="absolute inset-0 bg-indigo-500/10 blur-3xl rounded-full"
+            ></div>
+          }
+          <div
+            class="w-28 h-28 rounded-full flex items-center justify-center text-6xl shadow-xl relative z-10 transition-all"
+            [ngClass]="isUnlocked() ? 'bg-white filter-none' : 'bg-gray-200 grayscale opacity-60'"
+            >
+            <span class="drop-shadow-lg">{{ achievement.icon }}</span>
+          </div>
+          <div class="absolute top-4 right-4 z-10 flex gap-2">
+            @if (achievement.tier) {
+              <span class="px-2 py-0.5 rounded-full text-xs font-bold uppercase tracking-widest border" [ngClass]="getTierClass(achievement.tier)">
+                {{ achievement.tier | titlecase }}
+              </span>
+            }
+          </div>
         </div>
-        <div class="absolute top-4 right-4 z-10 flex gap-2">
-           <span *ngIf="achievement.tier" class="px-2 py-0.5 rounded-full text-xs font-bold uppercase tracking-widest border" [ngClass]="getTierClass(achievement.tier)">
-             {{ achievement.tier | titlecase }}
-           </span>
+      }
+    
+      @if (achievement) {
+        <div class="text-center mb-6">
+          <h3 class="text-2xl font-black text-gray-900 mb-2 flex items-center justify-center gap-2">
+            {{ achievement.title }}
+            @if (isUnlocked()) {
+              <i-lucide name="check-circle-2" class="w-5 h-5 text-success"></i-lucide>
+            }
+            @if (!isUnlocked()) {
+              <i-lucide name="lock" class="w-5 h-5 text-gray-400"></i-lucide>
+            }
+          </h3>
+          <p class="text-md font-medium text-gray-600 mb-4 px-4">{{ achievement.description }}</p>
+          <div class="inline-flex items-center gap-1.5 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-bold">
+            <i-lucide name="zap" class="w-4 h-4 fill-current"></i-lucide>
+            +50 XP Reward
+          </div>
         </div>
-      </div>
-
-      <div *ngIf="achievement" class="text-center mb-6">
-        <h3 class="text-2xl font-black text-gray-900 mb-2 flex items-center justify-center gap-2">
-          {{ achievement.title }}
-          <i-lucide *ngIf="isUnlocked()" name="check-circle-2" class="w-5 h-5 text-success"></i-lucide>
-          <i-lucide *ngIf="!isUnlocked()" name="lock" class="w-5 h-5 text-gray-400"></i-lucide>
-        </h3>
-        <p class="text-md font-medium text-gray-600 mb-4 px-4">{{ achievement.description }}</p>
-        
-        <div class="inline-flex items-center gap-1.5 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-bold">
-          <i-lucide name="zap" class="w-4 h-4 fill-current"></i-lucide>
-          +50 XP Reward
+      }
+    
+      @if (achievement) {
+        <div class="bg-white border border-gray-100 rounded-3xl p-5 shadow-sm">
+          <div class="flex justify-between items-center mb-3">
+            <span class="text-sm font-bold text-gray-500 uppercase tracking-widest">Progress</span>
+            <span class="text-sm font-black text-gray-900">{{ progress() }} / {{ max() }}</span>
+          </div>
+          <div class="w-full bg-gray-100 h-3 rounded-full overflow-hidden">
+            <div
+              class="h-full rounded-full transition-all duration-1000 ease-out"
+              [ngClass]="isUnlocked() ? 'bg-success' : 'bg-gradient-to-r from-primary to-[#7050ff]'"
+              [style.width.%]="percent()"
+            ></div>
+          </div>
         </div>
-      </div>
-
-      <div *ngIf="achievement" class="bg-white border border-gray-100 rounded-3xl p-5 shadow-sm">
-        <div class="flex justify-between items-center mb-3">
-          <span class="text-sm font-bold text-gray-500 uppercase tracking-widest">Progress</span>
-          <span class="text-sm font-black text-gray-900">{{ progress() }} / {{ max() }}</span>
-        </div>
-        <div class="w-full bg-gray-100 h-3 rounded-full overflow-hidden">
-          <div 
-            class="h-full rounded-full transition-all duration-1000 ease-out"
-            [ngClass]="isUnlocked() ? 'bg-success' : 'bg-gradient-to-r from-primary to-[#7050ff]'"
-            [style.width.%]="percent()"
-          ></div>
-        </div>
-      </div>
+      }
     </app-modal>
-  `
+    `
 })
 export class BadgeDetailsModalComponent {
   @Input() isOpen = false;

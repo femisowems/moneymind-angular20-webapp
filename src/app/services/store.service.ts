@@ -1,7 +1,8 @@
-import { Injectable, signal, computed, effect, PLATFORM_ID, Inject } from '@angular/core';
+import { Injectable, signal, computed, effect, PLATFORM_ID, Inject, untracked, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Reminder, Streak, CustomCategory, Goal, HealthScore } from '../types';
 import { isSameDay, differenceInDays, addDays, addWeeks, addMonths, addYears } from 'date-fns';
+import { SupabaseService } from './supabase.service';
 
 @Injectable({
   providedIn: 'root'
@@ -33,6 +34,9 @@ export class StoreService {
   inventory = this._inventory.asReadonly();
   hasCompletedOnboarding = this._hasCompletedOnboarding.asReadonly();
   score = this._score.asReadonly();
+  
+  private supabase = inject(SupabaseService);
+  isSyncing = signal(false);
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     // Persistence
@@ -59,7 +63,7 @@ export class StoreService {
     }
   }
 
-    // Auto-save effect
+    // Auto-save effect (LocalStorage + Supabase)
     effect(() => {
       const state = {
         reminders: this._reminders(),
@@ -72,10 +76,103 @@ export class StoreService {
         hasCompletedOnboarding: this._hasCompletedOnboarding(),
         score: this._score(),
       };
+      
       if (isPlatformBrowser(this.platformId)) {
         localStorage.setItem('moneymind-storage', JSON.stringify({ state }));
       }
+
+      // Sync to Supabase if logged in and not currently pulling
+      const user = this.supabase.user();
+      if (user && !this.isSyncing()) {
+        untracked(() => {
+          this.syncToSupabase(user.id, state);
+        });
+      }
     });
+
+    // Handle Auth state changes (Login/Logout)
+    effect(() => {
+      const user = this.supabase.user();
+      if (user) {
+        untracked(() => this.pullFromSupabase(user.id));
+      } else {
+        // Handle logout if needed (maybe clear local storage?)
+        // this.clearLocalStorage();
+      }
+    });
+  }
+
+  private async pullFromSupabase(userId: string) {
+    this.isSyncing.set(true);
+    try {
+      // Pull Reminders
+      const { data: reminders } = await this.supabase.client
+        .from('reminders')
+        .select('*')
+        .eq('user_id', userId);
+
+      if (reminders && reminders.length > 0) {
+        this._reminders.set(reminders);
+      }
+
+      // Pull Goals
+      const { data: goals } = await this.supabase.client
+        .from('goals')
+        .select('*')
+        .eq('user_id', userId);
+
+      if (goals && goals.length > 0) {
+        this._goals.set(goals);
+      }
+
+      // Pull Profile Data (HealthScore, Streak, etc.)
+      const { data: profile } = await this.supabase.client
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+
+      if (profile) {
+        this._streak.set(profile.streak || { currentStreak: 0, longestStreak: 0 });
+        this._score.set(profile.score || { value: 100, label: 'Strong', xp: 0, level: 1, nextLevelXP: 100 });
+        this._hasCompletedOnboarding.set(profile.hasCompletedOnboarding ?? true);
+        this._unlockedAchievements.set(profile.unlockedAchievements || []);
+        this._inventory.set(profile.inventory || { streakFreezes: 0 });
+      }
+    } catch (e) {
+      console.error('Failed to pull from Supabase', e);
+    } finally {
+      this.isSyncing.set(false);
+    }
+  }
+
+  private async syncToSupabase(userId: string, state: any) {
+    try {
+      // Sync Reminders (UPSERT)
+      const remindersToSync = state.reminders.map((r: any) => ({ ...r, user_id: userId }));
+      if (remindersToSync.length > 0) {
+        await this.supabase.client.from('reminders').upsert(remindersToSync);
+      }
+
+      // Sync Goals
+      const goalsToSync = state.goals.map((g: any) => ({ ...g, user_id: userId }));
+      if (goalsToSync.length > 0) {
+        await this.supabase.client.from('goals').upsert(goalsToSync);
+      }
+
+      // Sync Profile
+      await this.supabase.client.from('profiles').upsert({
+        id: userId,
+        streak: state.streak,
+        score: state.score,
+        hasCompletedOnboarding: state.hasCompletedOnboarding,
+        unlockedAchievements: state.unlockedAchievements,
+        inventory: state.inventory,
+        updated_at: new Date().toISOString()
+      });
+    } catch (e) {
+      console.error('Failed to sync to Supabase', e);
+    }
   }
 
   // Actions
