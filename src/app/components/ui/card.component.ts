@@ -16,7 +16,7 @@ import { cn } from '../../lib/utils';
 })
 export class CardComponent {
   @Input() className = '';
-  @Output() click = new EventEmitter<MouseEvent>();
+  @Output() cardClick = new EventEmitter<MouseEvent>();
 
   @HostBinding('class')
   get classes() {
@@ -28,6 +28,6 @@ export class CardComponent {
 
   @HostListener('click', ['$event'])
   onCardClick(event: MouseEvent) {
-    this.click.emit(event);
+    this.cardClick.emit(event);
   }
 }

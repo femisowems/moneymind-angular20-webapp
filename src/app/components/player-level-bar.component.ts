@@ -2,12 +2,11 @@ import { Component, inject, signal, effect, Output, EventEmitter, ChangeDetectio
 import { CommonModule } from '@angular/common';
 import { StoreService } from '../services/store.service';
 import { LucideAngularModule } from 'lucide-angular';
-import { ButtonComponent } from './ui/button.component';
 
 @Component({
   selector: 'app-player-level-bar',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, ButtonComponent],
+  imports: [CommonModule, LucideAngularModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="bg-white rounded-3xl p-5 sm:p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 mb-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-5 sm:gap-6 w-full cursor-default group hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-500">
@@ -24,21 +23,21 @@ import { ButtonComponent } from './ui/button.component';
           </div>
         </div>
 
+        <!-- Mobile Share (Hidden on Desktop) -->
         <button 
-          appButton
-          variant="ghost"
           (click)="openShare()"
-          class="sm:hidden p-3 rounded-2xl"
+          class="flex sm:hidden p-3.5 bg-gray-50 text-gray-400 hover:text-primary active:scale-95 transition-all rounded-2xl"
           title="Share Scorecard"
         >
           <i-lucide name="share-2" class="w-5 h-5"></i-lucide>
         </button>
       </div>
 
+      <!-- Progress Section -->
       <div class="flex-1 flex flex-col gap-2.5">
         <div class="flex justify-between items-end px-0.5">
           <div class="flex flex-col">
-            <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.15em] mb-0.5">Progress</span>
+            <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.15em] mb-0.5">Current Progress</span>
             <span class="text-xs font-bold text-gray-700">{{ xpIntoLevel() }} <span class="text-gray-400">/ 100 XP</span></span>
           </div>
           <div class="text-right flex flex-col items-end">
@@ -46,23 +45,25 @@ import { ButtonComponent } from './ui/button.component';
             <span class="text-xs font-bold text-primary">{{ 100 - xpIntoLevel() }} XP to go</span>
           </div>
         </div>
-        <div class="w-full h-3.5 bg-gray-100/80 rounded-full overflow-hidden shadow-inner relative border border-gray-50">
+        <div class="w-full h-3.5 bg-gray-100/80 rounded-full overflow-hidden shadow-inner relative border border-gray-50/50">
           <div 
-            class="absolute top-0 left-0 h-full bg-gradient-to-r from-primary via-primary-hover to-[#7050ff] rounded-full transition-all duration-1000 ease-out shadow-[0_0_12px_rgba(109,80,245,0.3)]" 
+            class="absolute top-0 left-0 h-full bg-gradient-to-r from-primary via-indigo-500 to-indigo-600 rounded-full transition-all duration-1000 ease-out shadow-[0_0_15px_rgba(99,102,241,0.2)]" 
             [style.width.%]="progressPercent()" 
           ></div>
         </div>
       </div>
       
+      <!-- Desktop Share (Hidden on Mobile) -->
       <button 
-        appButton
-        variant="secondary"
         (click)="openShare()"
-        class="hidden sm:flex px-4 py-3 rounded-2xl flex-col items-center justify-center shrink-0 min-w-[72px]"
+        class="hidden sm:flex px-6 py-3.5 rounded-3xl bg-white border border-gray-100/80 hover:border-primary/20 hover:bg-primary/5 text-gray-500 hover:text-primary shadow-sm hover:shadow-md active:scale-95 transition-all duration-300 flex flex-col items-center justify-center shrink-0 min-w-[80px] group/share"
         title="Share Scorecard"
       >
-        <i-lucide name="share-2" class="w-5 h-5 mb-1"></i-lucide>
-        <span class="text-[10px] uppercase tracking-widest font-black">Share</span>
+        <div class="relative mb-1">
+          <i-lucide name="share-2" class="w-5 h-5 group-hover/share:scale-110 transition-transform"></i-lucide>
+          <div class="absolute inset-0 bg-primary/20 blur-lg opacity-0 group-hover:opacity-100 transition-opacity"></div>
+        </div>
+        <span class="text-[9px] uppercase tracking-[0.2em] font-black">Share</span>
       </button>
 
       <!-- Share Modal would be here -->
