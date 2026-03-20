@@ -217,16 +217,19 @@ export class StoreService {
 
   addGoal(goalData: Omit<Goal, 'id'>) {
     this._goals.update(g => [...g, { ...goalData, id: crypto.randomUUID() }]);
+    this.calculateScore();
   }
 
   addFundsToGoal(id: string, amount: number) {
     this._goals.update(goals => 
       goals.map(g => g.id === id ? { ...g, currentAmount: Math.min(g.currentAmount + amount, g.targetAmount) } : g)
     );
+    this.calculateScore();
   }
 
   deleteGoal(id: string) {
     this._goals.update(g => g.filter(x => x.id !== id));
+    this.calculateScore();
   }
 
   purchaseItem(item: 'streakFreeze', cost: number): boolean {
@@ -258,9 +261,19 @@ export class StoreService {
       return;
     }
 
-    // Use only the most recent 50 reminders (pending + completed) for the health score
-    // This prevents the score from being diluted by a massive history of recurring tasks.
-    const sortedByDate = allReminders.sort((a, b) => 
+    // Use only the most recent 50 relevant reminders for the health score
+    // Relevant means completed OR due in the past/today, to avoid future uncompleted bills diluting the score.
+    const now = new Date();
+    const relevantReminders = allReminders.filter(r => 
+      r.isCompleted || new Date(r.dueDate) <= now
+    );
+
+    if (relevantReminders.length === 0 && this._goals().length === 0) {
+      this._score.set({ value: 100, label: 'Strong', xp, level, nextLevelXP });
+      return;
+    }
+
+    const sortedByDate = relevantReminders.sort((a, b) => 
       new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime()
     );
     const recentReminders = sortedByDate.slice(0, 50);
@@ -268,12 +281,32 @@ export class StoreService {
     const recentTotal = recentReminders.length;
     const recentCompleted = recentReminders.filter(r => r.isCompleted).length;
 
+    // Goals calculation
+    let goalsBonus = 0;
+    let goalsWeight = 0;
+    const goals = this._goals();
+    if (goals.length > 0) {
+      goalsWeight = 20; // 20 points allocated to goals
+      const targetSum = goals.reduce((sum, g) => sum + g.targetAmount, 0);
+      const currentSum = goals.reduce((sum, g) => sum + g.currentAmount, 0);
+      if (targetSum > 0) {
+        goalsBonus = (currentSum / targetSum) * goalsWeight;
+      }
+    }
+
     // Calculate components
-    const completionRatio = (recentCompleted / recentTotal) * 70;
+    let completionRatio = 0;
+    if (recentTotal > 0) {
+      const maxCompletionPoints = 70 - goalsWeight; // 50 if goals exist, 70 if not
+      completionRatio = (recentCompleted / recentTotal) * maxCompletionPoints;
+    } else {
+      // If we have goals but no relevant reminders, grant full completion points so we don't penalize
+      completionRatio = 70 - goalsWeight; 
+    }
     const streakBonus = Math.min((streak.currentStreak / 7) * 30, 30);
     
     // Final score stability: Use a small epsilon to avoid rounding jitter at .5
-    const rawScoreSum = completionRatio + streakBonus;
+    const rawScoreSum = completionRatio + streakBonus + goalsBonus;
     const roundedScore = Math.round(rawScoreSum + 0.00001);
     const finalScore = Math.min(100, Math.max(0, roundedScore));
 
