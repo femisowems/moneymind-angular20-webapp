@@ -54,19 +54,19 @@ import { trigger, transition, style, animate, query, stagger } from '@angular/an
           (click)="selectBadge(achievement)"
           class="p-5 rounded-[2.5rem] border shadow-sm transition-all flex flex-col items-center justify-center text-center relative overflow-hidden group hover:shadow-xl hover:border-primary/30 bg-white border-gray-100 hover:-translate-y-1 active:scale-95"
         >
-          <div class="relative w-16 h-16 mb-4 flex items-center justify-center bg-gray-50 rounded-[1.25rem] group-hover:bg-primary/5 transition-colors">
+          <div class="relative w-16 h-16 xl:w-20 xl:h-20 mb-4 flex items-center justify-center bg-gray-50 rounded-full group-hover:bg-primary/5 transition-colors border border-gray-100 shadow-sm group-hover:shadow-md">
             <!-- Progress Circle for Locked Multi-step achievements (Simplified) -->
             <svg *ngIf="!isUnlocked(achievement.id) && achievement.maxProgress && achievement.maxProgress > 1" class="absolute inset-0 w-full h-full -rotate-90 pointer-events-none p-1" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="46" stroke="#f3f4f6" strokeWidth="6" fill="none" />
-              <circle cx="50" cy="50" r="46" stroke="#6d50f5" strokeWidth="6" fill="none" 
+              <circle cx="50" cy="50" r="46" stroke="#f1f5f9" stroke-width="8" fill="none" />
+              <circle cx="50" cy="50" r="46" stroke="#6366f1" stroke-width="8" fill="none" 
                 class="transition-all duration-1000 ease-out" 
                 [attr.stroke-dasharray]="289" 
                 [attr.stroke-dashoffset]="289 - (289 * getPercent(achievement)) / 100" 
-                strokeLinecap="round" />
+                stroke-linecap="round" />
             </svg>
             <span 
-              class="text-4xl filter drop-shadow-md z-10 transition-transform group-hover:scale-110 duration-500"
-              [ngClass]="{'grayscale opacity-40': !isUnlocked(achievement.id)}"
+              class="text-[2.5rem] xl:text-[3rem] filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.08)] antialiased z-10 transition-transform group-hover:scale-110 duration-500"
+              [ngClass]="{'grayscale opacity-30': !isUnlocked(achievement.id)}"
             >
               {{ achievement.icon }}
             </span>

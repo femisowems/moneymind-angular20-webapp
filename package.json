@@ -28,13 +28,15 @@
   },
   "scripts": {
     "ng": "ng",
-    "start": "concurrently \"npm run watch:css\" \"ng serve\"",
+    "dev": "concurrently -k -p \"[{name}]\" -n \"CSS,ANGULAR\" -c \"magenta,cyan\" \"npm run watch:css\" \"ng serve\"",
+    "start": "npm run dev",
     "build": "npm run build:css && ng build",
-    "build:css": "npx @tailwindcss/cli -i src/styles.css -o src/styles.compiled.css",
-    "watch:css": "npx @tailwindcss/cli -i src/styles.css -o src/styles.compiled.css --watch",
-    "watch": "ng build --watch --configuration development",
+    "build:css": "tailwindcss -i src/styles.css -o src/styles.compiled.css",
+    "watch:css": "tailwindcss -i src/styles.css -o src/styles.compiled.css --watch",
     "test": "ng test",
-    "serve:ssr:moneymind-angular20-webapp": "node dist/moneymind-angular20-webapp/server/server.mjs"
+    "serve:ssr": "node dist/moneymind-angular20-webapp/server/server.mjs",
+    "preview": "npm run build && npm run serve:ssr",
+    "lint": "ng lint"
   },
   "prettier": {
     "printWidth": 100,

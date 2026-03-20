@@ -159,9 +159,9 @@ import { Reminder } from '../types';
 
       @defer (on idle) {
         <app-reminder-details-modal 
-          [isOpen]="!!selectedReminder()" 
+          [isOpen]="!!selectedReminderId()" 
           [reminder]="selectedReminder()"
-          (onClose)="selectedReminder.set(null)"
+          (onClose)="selectedReminderId.set(null)"
         ></app-reminder-details-modal>
       }
 
@@ -191,7 +191,17 @@ export class HomeComponent implements OnInit {
   isShopOpen = signal(false);
   isSettingsOpen = signal(false);
   isShareModalOpen = signal(false);
-  selectedReminder = signal<Reminder | null>(null);
+  selectedReminderId = signal<string | null>(null);
+
+  selectedReminder = computed(() => {
+    const id = this.selectedReminderId();
+    if (!id) return null;
+    return (
+      this.store.reminders().find(r => r.id === id) || 
+      this.store.deletedReminders().find(r => r.id === id) || 
+      null
+    );
+  });
 
   filteredReminders = computed(() => {
     const filter = this.statusFilter();
@@ -221,6 +231,6 @@ export class HomeComponent implements OnInit {
   }
 
   onOpenDetails(reminder: Reminder) {
-    this.selectedReminder.set(reminder);
+    this.selectedReminderId.set(reminder.id);
   }
 }

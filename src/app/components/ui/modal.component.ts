@@ -20,11 +20,11 @@ import { LucideAngularModule } from 'lucide-angular';
     ]),
     trigger('modal', [
       transition(':enter', [
-        style({ opacity: 0, scale: 0.95, transform: 'translate(-50%, -40%)' }),
-        animate('200ms ease-out', style({ opacity: 1, scale: 1, transform: 'translate(-50%, -50%)' }))
+        style({ opacity: 0 }),
+        animate('150ms ease-out', style({ opacity: 1 }))
       ]),
       transition(':leave', [
-        animate('200ms ease-in', style({ opacity: 0, scale: 0.95, transform: 'translate(-50%, -40%)' }))
+        animate('150ms ease-in', style({ opacity: 0 }))
       ])
     ])
   ],
